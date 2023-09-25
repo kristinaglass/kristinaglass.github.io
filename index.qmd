@@ -1,5 +1,21 @@
 ---
-title: "kristinaglass.github.io"
+title: "Kristina Glass"
+image: headshot.jpg
+toc: false
+about:
+  template: jolla
+  image-shape: round
+  image-width: 10em
+  links: 
+    - text: linkedIn
+      href: https://www.linkedin.com/in/kristina-glass-4213511bb/
+      icon: linkedin
+    - text: github
+      href: https://github.com/kristinaglass
+      icon: github - alt
+    - text: email
+      href: mailto::kristinaglass@ucsb.edu
+      icon: envelope-open
 ---
 
 Hi this is kristina
