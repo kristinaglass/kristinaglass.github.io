@@ -1,0 +1,16 @@
+---
+title: "My first blog post"
+description: "this is my short description"
+author:
+  - name: Kristina Glass
+    url: https://kristinaglass.github.io/
+    affiliation: Master of Environmental Data Science Program
+    affiliation-url: https://ucsb-meds.github.io/
+date: 11/06/2023
+categories: [Quarto, R, MEDS]
+citation:
+  url: https://kristinaglass.github.io.blog/2020-ll-06-my-first-post
+image: randomimage.webp
+---
+
+Hi, this is my first post I hope you like it :)
