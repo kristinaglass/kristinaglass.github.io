@@ -17,8 +17,7 @@ website:
 format:
   html:
     theme:
-      light: vapor
-      dark: solar
+      light: sandstone
     css: styles.css
     toc: true
     page-layout: full
