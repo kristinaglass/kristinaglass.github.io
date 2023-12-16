@@ -10,7 +10,6 @@ date: 12/15/2023
 categories: [Quarto, R, MEDS]
 citation:
   url: https://kristinaglass.github.io.blog/2023-12-15_santa_clara_river
-image: tnc_675000065_Full.jpg
 ---
 
 # Introduction
