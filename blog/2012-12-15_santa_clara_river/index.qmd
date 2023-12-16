@@ -1,0 +1,110 @@
+---
+title: "NDVI Along Santa Clara River"
+description: "This project explores plant phenology along the Santa Clara River, investingating plant communities over time. "
+author:
+  - name: Kristina Glass
+    url: https://github.com/kristinaglass/santa_clara_river_phenology/tree/main
+    affiliation: Master of Environmental Data Science Program
+    affiliation-url: https://ucsb-meds.github.io/
+date: 12/15/2023
+categories: [Quarto, R, MEDS]
+citation:
+  url: https://kristinaglass.github.io.blog/2023-12-15_santa_clara_river
+image: tnc_675000065_Full.jpg
+---
+
+# Introduction
+
+*\*Credit: This project is based on materials developed by Chris Kibler*
+
+## What is Phenology
+
+Phenology is the cyclical and seasonal lifecycle of natural phenomenon. For plants, importent phenological events include their growth of leaves, flowering, and death of leaves (or senescence). Some common phenological strategies of plants include the loss of leaves in winter and growth of leaves in spring (winter deciduous), the loss of leaves in summer (drought deciduous), and the maintenance of leaves year-round (evergreen). Due to climate change, plant phenology is shifting and it is important to understand what these shifts include and where these shifts are happening.
+
+## Area of Interest
+
+For this study, I'm interested in exploring plant phenology near the Santa Clara River which flows from Santa Clarita, CA and Ventura, CA. It is the last major coastal system within Southern California that has been relatively unchanged by development and supports over 17 species. The Santa Clara River is also supportive of one of the most valuable agricultural in the world[1](http://rivrlab.msi.ucsb.edu/santa-clara-river).
+
+# Purpose of Study
+
+The purpose of this study is to investigate plant phenology of riparian forests, grasslands, and chaparral shrub lands along the Santa Clara River. Riparian forests grow along the river and are dominated by winter deciduous cottonwood and willow trees, grasslands grow in open spaces and are predominate dominated by deciduous grasses, and chaparral shrub lands grow in more arid areas and are dominated by evergreen shrubs.
+
+I will explore the vegetation productivity (NDVI), calculate the NDVI throughout the year, summarize the NDVI values within vegetation communities, and visualize the changes in NDVI within vegetation communities.
+
+# Data
+
+**Landsat Operational Land Imager (OLI sensor)** which contains 8 pre-processed scenes. The attributes of the scenes are as follows:
+
+1.  Level 2 surface reflectance products
+
+2.  erroneous values were set to NA
+
+3.  Scale factor set to 100
+
+4.  Bands are 2-7
+
+5.  Dates of the scenes are in file name
+
+and
+
+**Study sites** which are polygons that represent the sites of interest. The attributes are as follows:
+
+1.  "study_site" is a character string with plant type
+
+The data are available in a folder labeled "data" within the repository
+
+# Analysis and Results
+
+## Creation of Function
+
+To begin this analysis, a function to read in all NDVI layers was created. The code for this function is shown below
+
+![Fig. 1 Function that reads in all NDVI layers as a single raster stack. Inputs for the function are 1-8 based on the amount of raster images in "files" variable](images/Screenshot%202023-12-15%20195554.png){width="547"}
+
+The function as shown above (Fig.1) was created as a way to streamline reading in the raster data and combining the rasters into a single raster stack. The resulting output of "all_ndvi" was then used to plot the raster data and helped to further the analysis of NDVI around the Santa Clara River
+
+## NDVI Layers Across Vegetation Communities
+
+Since the NDVI for each scene was computed, I can now compare changes in NDVI values across the vegetation communities within the region. As a reminder, those communities are: riparion forests, grasslands, chaparral shrub lands. Now that we have computed NDVI for each of our scenes (days) we want to compare changes in NDVI values across different vegetation communities.
+
+The vegetation communities were read in as "sites" and the dataset was cleaned in order to be merged with the NDVI dataset, and to make our main analysis simpler.
+
+The average NDVI within vegetation communities was extracted using `terra::extract()`, then the resulting data frame was merged with "sites" by column using `cbind()`. The new data frame was then cleaned by first dropping the unnecessary geometry with `st_drop_geometry()`, then by dropping the "ID" and "name" columns with `select()`. Following that, `pivot_longer()` was used to increase the number of rows in the data frame and decrease the number of columns. `rename()` was used to create the "NDVI" column and columns "year", "month", and "day" were created using `mutate()` and `str_sub()` to extract and replace the date listed within the column into their own columns. This was done to create a new "date" column using `unite()` ,`mutate()`, and finally `lubradate::as_date()` to turn it into a datetime object.
+
+### Exploratory Plot
+
+The following plot (Fig. 2) was created to visualize study sites across the Santa Clara River raster. The study sites are shown in purple polygons overlayed onto the raster.
+
+![Fig. 2 Plot of study sites over Santa Clarita River Raster. This is a basic exploratory plot in order to get a better understanding of our area of study and the locations of the study sites](images/Screenshot%202023-12-15%20202331.png){width="489"}
+
+## Results
+
+![Fig. 3 A line plot of seasonal cycles of vegetation productivity over June 2018 to July 2019. This plot shows the NDVI of vegetation communities by color](images/Screenshot%202023-12-15%20202553.png){width="500"}
+
+NDVI values will range from -1.0 - 1.0, where negative values indicate clouds and water, positive values near zero indicate bare soil, values from 0.1-0.5 indicating sparse vegetation and 0.6-1.0 indicating dense green vegetation [2](https://ipad.fas.usda.gov/cropexplorer/Definitions/spotveg.htm). With this knowledge, we can begin to interpret the results.
+
+### Chaparral
+
+NDVI primarily remained above 0.6, save for a dip falling to 0.55 at the lowest between July and October. Since these vegetation communities are dominated by evergreen species, this is an expected result since they stay green all year long. The small dip in NDVI could be attributed to high temperatures seen during the summer or a small drought period.
+
+### Riparian Forests
+
+Forest1 and Forest 2 maintain similar cycles of productivity, experiencing drops in NDVI under 0.5-0.4 from January to April, and rises in productivity during summer months. Since the communities within Riparian forests are winter deciduous, they will lose their leaves during the fall and winter and regrow them through the spring in summer, explaining the rise and fall cycles of its NDVI.
+
+For Forest3 maintains similar productivity cycles as those listed above, but has much longer periods of maintaining sparse vegetation, save for a spike above 0.6 after April 2019.
+
+### Grassland
+
+This vegetation experiences the most extreme shifts in NDVI, with values under 0.3 from July 2018 to just after October 2018 where it experiences a sharp spike, followed by a sudden decline after April 2019. Since these grasses are deciduous, they lose their leaves in the winter and gain them back during the Spring.
+
+# Conclusion
+
+From the data available, we can see that in 2019, NDVI values as of July were above NDVI values for the following year. This could be due to longer periods of rain[3](https://www.latimes.com/california/story/2019-12-31/southern-california-precipitation-above-normal-year-end), longer periods of warm weather, or other climate related factors, which would be worth investigating for future study. While none of the study sites experienced extreme deviations expected NDVI from 2018-2019, the shift in their seasonal productivity cycle is present as indicated by the plot above.
+
+# References
+
+Duginski, P. (2020, January 1). *At Year's End, Southern California's precipitation remains above normal*. Los Angeles Times. <https://www.latimes.com/california/story/2019-12-31/southern-california-precipitation-above-normal-year-end>
+
+*Normalized difference vegetation index (NDVI)*. International Production Assessment Division (IPAD) - Home Page. (n.d.). <https://ipad.fas.usda.gov/cropexplorer/Definitions/spotveg.htm>
+
+*Santa Clara River Research and Restoration*. Rivrlab.msi.ucsb.edu. (n.d.). <http://rivrlab.msi.ucsb.edu/santa-clara-river>
